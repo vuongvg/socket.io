@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Hello world</title>
+   </head>
+   <script src="/socket.io/socket.io.js"></script>
+   <script>
+      var socket = io();
+
+      function setUsername() {
+         socket.emit('joinRoom',{ username: document.getElementById("name").value, room: document.getElementById("room").value })
+
+         socket.emit("setUsername", { username: document.getElementById("name").value, room: document.getElementById("room").value });
+      }
+
+      var user;
+
+      socket.on("userExists", function (data) {
+         document.getElementById("error-container").innerHTML = data;
+      });
+
+      socket.on("userSet", function (data) {
+         user = data.username;
+         document.body.innerHTML =
+            '<input type="text" id="message">\
+         <button type="button" name="button" onclick="sendMessage()">Send</button>\
+         <div id="message-container"></div>';
+      });
+
+      function sendMessage() {
+         var msg = document.getElementById("message").value;
+         if (msg) {
+            socket.emit("msg", { message: msg, user: user });
+         }
+      }
+
+      socket.on("newmsg", function (data) {
+         if (user) {
+            document.getElementById("message-container").innerHTML += "<div><b>" + data.user + "</b>: " + data.message + "</div>";
+         }
+      });
+
+   </script>
+   <body>
+      <div id="error-container"></div>
+      <input id="name" type="text" name="name" value="" placeholder="Enter your name!" />
+      <select id="room" name="room">
+         <option value="js">js</option>
+         <option value="python">python</option>
+      </select>
+      <button type="button" name="button" onclick="setUsername()">Let me chat!</button>
+   </body>
+</html>
