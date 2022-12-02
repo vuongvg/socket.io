@@ -3,6 +3,16 @@ exports.webSocket = (io) => {
    const listRoom = {};
 
    io.on("connection", function (socket) {
+      socket.on("listRoom", () => {
+         try {
+            console.log(" listRoom",listRoom);
+            socket.emit("listRoom", Object.values(listRoom));
+         } catch (error) {
+            socket.emit("errorSocket", { msg: error.message, at: "list Room" });
+            console.log(`  ~ error`, error);
+         }
+      });
+
       socket.on("createRoom", (data) => {
          try {
             const { roomName, userCreate } = data;
