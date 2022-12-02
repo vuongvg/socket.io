@@ -19,7 +19,7 @@ app.use(morgan('dev'))
 app.use(express.json());
 app.use(cors(false));
 app.get("/", function (req, res) {
-   res.sendFile(path.join(__dirname, "./index.html"));
+   res.send('sever run')
 });
 
 app.use("/api", router);
