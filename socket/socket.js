@@ -53,8 +53,9 @@ exports.webSocket = (io) => {
 
       socket.on("joinRoom", ({ room, userID }) => {
          try {
-            const { userCreate, roomName } = listRoom[room];
+            if (!listRoom[room]) return socket.emit("joinRoom", { msg: "Not found room" });
 
+            const { userCreate, roomName } = listRoom[room];
             socket.emit("joinRoom", { userCreate, roomName });
 
             if (userCreate === userID) listRoom[room].socketIDUserCreate = socket.id;
@@ -93,33 +94,24 @@ exports.webSocket = (io) => {
 
             socket.on("disconnect", function (data) {
                try {
-                  io.of("/")
-                     .in(room)
-                     .clients(function (error, clients) {
-                        var numClients = clients.length;
-                        if (numClients == 0) {
-                           delete listRoom[room];
-                           drawData[room] = [];
-                        }
-                     });
+                  const numClients = io.sockets.adapter.rooms.get(room);
+                  if (!numClients?.size) {
+                     delete listRoom[room];
+                     drawData[room] = [];
+                  }
                } catch (error) {
                   socket.emit("errorSocket", { msg: error.message, at: "disconnect" });
-                  console.log(`  ~ error disconnect`, error);
+                  console.log(`  ~ error disconnect:`, error);
                }
             });
 
-            // Start listening for mouse move events
-            socket.on("mousemove", function (data) {
-               try {
-                  socket.broadcast.to(data.room).emit("moving", data);
-               } catch (error) {
-                  socket.emit("errorSocket", { msg: error.message, at: "mousemove" });
-                  console.log(`  ~ error mousemove`, error);
-               }
+            socket.on("check", (data) => {
+               console.log(data, socket.id);
+               if (userCreate === userID) socket.to(room).emit("check", data);
             });
          } catch (error) {
-            socket.emit("errorSocket", { msg: error.message, at: "disconnect" });
-            console.log(`  ~ error disconnect`, error);
+            socket.emit("errorSocket", { msg: error.message, at: "join room" });
+            console.log(`  ~ error join room`, error);
          }
       });
    });
