@@ -106,8 +106,9 @@ exports.webSocket = (io) => {
             });
 
             socket.on("check", (data) => {
-               console.log(data, socket.id);
-               if (userCreate === userID) socket.to(room).emit("check", data);
+               // console.log(data, socket.id);
+               // if (userCreate === userID) 
+               socket.to(room).emit("check", data);
             });
          } catch (error) {
             socket.emit("errorSocket", { msg: error.message, at: "join room" });
