@@ -23,7 +23,7 @@ app.get("/", function (req, res) {
 });
 
 app.use("/api", router);
-app.use(notFoundMdw);
+app.use(notFoundMdw); 
 app.use(errorHandleMdw);
 
 connectToDb()

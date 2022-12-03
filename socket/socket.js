@@ -5,7 +5,7 @@ exports.webSocket = (io) => {
    io.on("connection", function (socket) {
       socket.on("listRoom", () => {
          try {
-            console.log(" listRoom",listRoom);
+            console.log(" listRoom",Object.values(listRoom));
             socket.emit("listRoom", Object.values(listRoom));
          } catch (error) {
             socket.emit("errorSocket", { msg: error.message, at: "list Room" });
