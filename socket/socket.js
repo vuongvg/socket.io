@@ -62,18 +62,18 @@ exports.webSocket = (io) => {
       });
 
       socket.on("joinRoom", ({ room, userID }) => {
+         console.log('joinroom')
          try {
             if (!listRoom[room]) return socket.emit("joinRoom", { msg: "Not found room" });
 
             const { userCreate, roomName } = listRoom[room];
             socket.emit("joinRoom", { userCreate, roomName });
-
             if (userCreate === userID) listRoom[room].socketIDUserCreate = socket.id;
             if (!room) return;
 
             const checkUser = listRoom[room]?.member
                .map((user) => user.username)
-               .flat()
+               .flat() 
                .filter((item) => item === userID);
 
             if (checkUser) socket.join(room);
@@ -104,6 +104,7 @@ exports.webSocket = (io) => {
 
             socket.on("disconnect", function (data) {
                try {
+                  console.log(` disconnect`)
                   const numClients = io.sockets.adapter.rooms.get(room);
                   if (!numClients?.size) {
                      delete listRoom[room];

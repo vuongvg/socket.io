@@ -19,6 +19,9 @@ app.use(morgan('dev'))
 app.use(express.json());
 app.use(cors(false));
 app.get("/", function (req, res) {
+   setInterval(() => {
+      console.log('time: ',new Date())
+   }, 60*1000);
    res.send('sever run')
 });
 
