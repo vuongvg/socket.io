@@ -18,11 +18,23 @@ var io = require("socket.io")(http);
 app.use(morgan('dev'))
 app.use(express.json());
 app.use(cors(false));
+
+let time
+let i=0
 app.get("/", function (req, res) {
-   setInterval(() => {
-      console.log('time: ',new Date())
-   }, 60*1000);
    res.send('sever run')
+});
+app.get("/start", function (req, res) {
+   time=setInterval(() => {
+      i++
+      console.log('time: ',new Date().toLocaleString())
+   }, 5*60*1000);
+   res.send('sever start time')
+});
+app.get("/stop", function (req, res) {
+   console.log('i',i)
+   clearInterval(time)
+   res.send('sever stop time: i '+i)
 });
 
 app.use("/api", router);
