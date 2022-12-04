@@ -104,7 +104,7 @@ exports.webSocket = (io) => {
 
             socket.on("disconnect", function (data) {
                try {
-                  console.log(` disconnect`)
+                  console.log(` disconnect`,userID)
                   const numClients = io.sockets.adapter.rooms.get(room);
                   if (!numClients?.size) {
                      delete listRoom[room];
